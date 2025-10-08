@@ -11,10 +11,6 @@ from gabiru_optimizer.pso_optimizer import optimize_segment
 CSV_PATH = os.path.expanduser("~/sim_ws/optimized_PP_params.csv")
 
 def save_pp_params(segment_id, tipo, Ld, vd, w_max, start_idx, end_idx, csv_path=CSV_PATH):
-    """
-    Guarda los parámetros optimizados en un archivo CSV.
-    Si el archivo no existe, crea uno nuevo con encabezados.
-    """
     file_exists = os.path.isfile(csv_path)
     with open(csv_path, 'a', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=['segment_id', 'tipo', 'Ld', 'vd', 'w_max', 'start_idx', 'end_idx'])
@@ -33,7 +29,7 @@ def save_pp_params(segment_id, tipo, Ld, vd, w_max, start_idx, end_idx, csv_path
 class PSOOptimizerNode(Node):
     def __init__(self):
         super().__init__('pso_optimizer_node')
-        self.srv = self.create_service(Trigger, 'ready_to_receive_optimization', self.ready_callback)
+        self.srv = self.create_service(Trigger, 'ready_to_receive_optimization', self.ready_callback)  # Corregido
         self.optimized_segments = set()
         self.get_logger().info("Nodo PSO iniciado")
 
@@ -56,7 +52,7 @@ class PSOOptimizerNode(Node):
             segment_id = data["segment_id"]
             tipo = data["tipo"]
             waypoints = data["waypoints"]
-            indices = data["indices"]  # Ahora incluido en el JSON
+            indices = data["indices"]
         except Exception as e:
             self.get_logger().error(f"Error al parsear JSON: {e}")
             return
